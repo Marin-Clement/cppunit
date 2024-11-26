@@ -52,12 +52,13 @@ jobs:
       - name: Send Notification to Google Chat
         env:
           GOOGLE_CHAT_WEBHOOK: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
-          STATUS: ${{ job.status }}
+          STATUS: ${{ needs.test.result == 'success' && needs.build-docker.result == 'success' && 'success' || 'failure' }}
         run: |
           MESSAGE="CI/CD Pipeline $STATUS\nCommit: ${{ github.sha }}\nBranch/Tag: ${{ github.ref }}"
-          if [ "${STATUS}" == "failure" ]; then
+          if [ "$STATUS" == "failure" ]; then
             MESSAGE+="\nLes tests ou le build Docker ont échoué."
           fi
           curl -X POST $GOOGLE_CHAT_WEBHOOK \
           -H 'Content-Type: application/json' \
           -d "{\"text\": \"$MESSAGE\"}"
+
