@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline 🚀
 
 on:
   push:
@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout Code 📥
         uses: actions/checkout@v4
 
-      - name: Compile the code
+      - name: Compile the Code 🛠️
         run: g++ -o cppunit_test cppunit_test.cc
         
-      - name: Run test
+      - name: Run Tests ✅
         run: ./cppunit_test
         continue-on-error: false
 
@@ -25,21 +25,21 @@ jobs:
     needs: test
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code 📥
         uses: actions/checkout@v3
 
-      - name: Build Docker Image
+      - name: Build Docker Image 🐳
         run: |
           docker build -t ghcr.io/marin-clement/cppunit:${GITHUB_REF_NAME,,} .
 
-      - name: Log in to GitHub Container Registry
+      - name: Log in to GitHub Container Registry 🔐
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push Docker Image
+      - name: Push Docker Image 📤
         run: |
           docker push ghcr.io/marin-clement/cppunit:${GITHUB_REF_NAME,,}
 
@@ -49,16 +49,16 @@ jobs:
     if: always()
 
     steps:
-      - name: Send Notification to Google Chat
+      - name: Send Notification to Google Chat 💬
         env:
           GOOGLE_CHAT_WEBHOOK: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
           STATUS: ${{ needs.test.result == 'success' && needs.build-docker.result == 'success' && 'success' || 'failure' }}
         run: |
-          MESSAGE="CI/CD Pipeline $STATUS\nCommit: ${{ github.sha }}\nBranch/Tag: ${{ github.ref }}"
-          if [ "$STATUS" == "failure" ]; then
-            MESSAGE+="\nLes tests ou le build Docker ont échoué."
+          if [ "$STATUS" == "success" ]; then
+            MESSAGE="🎉 *CI/CD Pipeline Success!* 🎉\n\n✅ All steps completed successfully!\n🔧 *Commit:* \`${{ github.sha }}\`\n🌿 *Branch/Tag:* \`${{ github.ref }}\`"
+          else
+            MESSAGE="❌ *CI/CD Pipeline Failed!* ❌\n\n⚠️ An error occurred during tests or Docker build.\n🔧 *Commit:* \`${{ github.sha }}\`\n🌿 *Branch/Tag:* \`${{ github.ref }}\`\n\nPlease check the workflow logs for more details."
           fi
           curl -X POST $GOOGLE_CHAT_WEBHOOK \
           -H 'Content-Type: application/json' \
           -d "{\"text\": \"$MESSAGE\"}"
-
