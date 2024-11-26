@@ -10,15 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-        - name: Checkout Code
-          uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-        - name: Compile the code
-          run: g++ -o cppunit_test cppunit_test.cc
+      - name: Compile the code
+        run: g++ -o cppunit_test cppunit_test.cc
         
-        - name: Run test
-          run: ./cppunit_test
-          continue-on-error: false
+      - name: Run test
+        run: ./cppunit_test
+        continue-on-error: false
 
   build-docker:
     runs-on: ubuntu-latest
@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t ghcr.io/Marin-Clement/cppunit:${{ github.ref_name }} .
+          docker build -t ghcr.io/marin-clement/cppunit:${GITHUB_REF_NAME,,} .
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
@@ -41,7 +41,7 @@ jobs:
 
       - name: Push Docker Image
         run: |
-          docker push ghcr.io/Marin-Clement/cppunit:${{ github.ref_name }}
+          docker push ghcr.io/marin-clement/cppunit:${GITHUB_REF_NAME,,}
 
   notify:
     runs-on: ubuntu-latest
