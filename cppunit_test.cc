@@ -24,6 +24,8 @@ class Cppunit_tests: public Cppunit {
         // String match check.
         CHECKS("a" "b", "ab");
 
+        FAIL("Forced fail example.");
+
         // Stdin override example.
         test_cin("2\n2");
         CHECK((new test_class)->calculate(), 4);
