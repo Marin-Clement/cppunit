@@ -10,20 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+        - name: Checkout Code
+          uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential cmake
-
-      - name: Build and Run Tests
-        run: |
-          mkdir build && cd build
-          cmake ..
-          make
-          ctest --output-on-failure
+        - name: Compile the code
+          run: g++ -o cppunit_test cppunit_test.cc
+        
+        - name: Run test
+          run: ./cppunit_test
+          continue-on-error: false
 
   build-docker:
     runs-on: ubuntu-latest
